@@ -6,16 +6,14 @@ import json
 
 # Create your views here.
 def chat_view(request):
-    chatbot = ChatBot("Cool")
-    chatbot.storage.drop()
+    chatbot = ChatBot("Bot",storage_adapter='chatterbot.storage.SQLStorageAdapter',database_uri='sqlite:///chatbot.sqlite3',read_only=True)
     trainer = ChatterBotCorpusTrainer(chatbot)
     trainer.train(
-        "chatterbot.corpus.custom.service",
-        "chatterbot.corpus.english.greetings",
+        "corpus.english.training"
     )
-    response = chatbot.get_response("tell course ")
+    response = chatbot.get_response("how are you")
     data ={
         "chat": response.text
     }
     data = json.dumps(data)
-    return HttpResponse(data,content_type="application/json")
+    return HttpResponse(data,content_type="application/json",status = 200)
